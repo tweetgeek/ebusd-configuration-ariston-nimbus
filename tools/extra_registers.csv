@@ -1,0 +1,9 @@
+# Rejestry spoza ariston.csv, opisane w github.com/ysard/ebusd_configuration_chaffoteaux_bridgenet (README, "Command IDs").
+# id,circuit,name,type,divisor/values,unit
+6197,energymgr,z1_heat_water_target_temp,SIN,10,°C
+6297,energymgr,z2_heat_water_target_temp,SIN,10,°C
+6397,energymgr,z3_heat_water_target_temp,SIN,10,°C
+c679,energymgr,z1_heat_request_mode,UCH,0=standard;1=no_time_program;2=forced,
+c67a,energymgr,z2_heat_request_mode,UCH,0=standard;1=no_time_program;2=forced,
+c67b,energymgr,z3_heat_request_mode,UCH,0=standard;1=no_time_program;2=forced,
+d746,energymgr,dhw_comfort_zones,UCH,,

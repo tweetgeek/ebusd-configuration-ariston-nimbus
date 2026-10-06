@@ -36,9 +36,13 @@ Wymaga Dockera i logu ebusd z ramkami `received unknown ... cmd`.
 mkdir base && cp ariston.csv _templates.csv base/        # konfiguracja bez uzupełnienia
 python3 tools/frames.py ebusd.log > frames.txt           # unikalne ramki z logu
 tools/runall.sh "$PWD/base" "$PWD/frames.txt" > base.out # co ebusd rozpoznaje bez uzupełnienia
-python3 tools/gen.py ariston.csv base.out ebusd.log ariston_nimbus50s.csv
+python3 tools/gen.py ariston.csv base.out ebusd.log ariston_nimbus50s.csv tools/extra_registers.csv
 tools/runall.sh "$PWD" "$PWD/frames.txt" | grep -c 'received unknown'   # weryfikacja
 ```
+
+`tools/extra_registers.csv` zawiera rejestry, których nie ma w `ariston.csv`, opisane w
+[ysard/ebusd_configuration_chaffoteaux_bridgenet](https://github.com/ysard/ebusd_configuration_chaffoteaux_bridgenet).
+Nowo rozpoznane rejestry wystarczy dopisać do tego pliku i wygenerować CSV ponownie.
 
 ## Licencja
 

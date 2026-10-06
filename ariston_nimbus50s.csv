@@ -12,6 +12,9 @@ b,energymgr,z1_night_temp_200e,z1_night_temp_200e (200e),,fe,200e,6371,,,SIN,10,
 b,energymgr,z2_night_temp_200e,z2_night_temp_200e (200e),,fe,200e,6372,,,SIN,10,°C,,
 b,energymgr,z3_night_temp_200e,z3_night_temp_200e (200e),,fe,200e,6373,,,SIN,10,°C,,
 b,energymgr,z1_cool_setpoint_temp_set_200e,z1_cool_setpoint_temp_set_200e (200e),,fe,200e,7071,,,SIN,10,°C,,
+b,energymgr,z1_heat_request_mode,z1_heat_request_mode (200e),,fe,200e,c679,,,UCH,0=standard;1=no_time_program;2=forced,,,
+b,energymgr,z2_heat_request_mode,z2_heat_request_mode (200e),,fe,200e,c67a,,,UCH,0=standard;1=no_time_program;2=forced,,,
+b,energymgr,z3_heat_request_mode,z3_heat_request_mode (200e),,fe,200e,c67b,,,UCH,0=standard;1=no_time_program;2=forced,,,
 
 # Rozgłoszenia wartość+status (2010 cykliczne, 200f odpowiedź na pytanie 2000)
 b,energymgr,bc_200f_0082,Broadcast 200f: 0082 0083 c079 c07a,,fe,200f,0082,z2_heat_temp_range,,BCD,0=low;1=high,,,ign,,IGN:3,,,,z3_heat_temp_range,,BCD,0=low;1=high,,,ign,,IGN:3,,,,z1_heat_therm_type_selection,,BCD,0=fixed_temp;1=basic_on_off;2=outdoor_temp_only;3=room_temp_only;4=outdoor_and_room,,,ign,,IGN:3,,,,z2_heat_therm_type_selection,,BCD,0=fixed_temp;1=basic_on_off;2=outdoor_temp_only;3=room_temp_only;4=outdoor_and_room,,,
@@ -21,8 +24,10 @@ b,energymgr,bc_200f_0f23,Broadcast 200f: 0f23 1023 0781 0782,,fe,200f,0f23,ign,,
 b,energymgr,hybrid_LWT_setpoint_200f,hybrid_LWT_setpoint_200f (200f),,fe,200f,6047,,,SIN,10,°C,,
 b,energymgr,z3_heat_therm_type_selection,z3_heat_therm_type_selection (200f),,fe,200f,c07b,,,BCD,0=fixed_temp;1=basic_on_off;2=outdoor_temp_only;3=room_temp_only;4=outdoor_and_room,,,
 b,energymgr,bc_2010_0291,Broadcast 2010: 0291 0391 0491 0591,,fe,2010,0291,z2_heat_request,,onoff,,,,ign,,IGN:3,,,,z3_heat_request,,onoff,,,,
+b,energymgr,bc_2010_6197,Broadcast 2010: 6197 6297 6397,,fe,2010,6197,z1_heat_water_target_temp,,SIN,10,°C,,ign,,IGN:3,,,,z2_heat_water_target_temp,,SIN,10,°C,,ign,,IGN:3,,,,z3_heat_water_target_temp,,SIN,10,°C,,
 b,energymgr,z2_setpoint_temp_2010,z2_setpoint_temp_2010 (2010),,fe,2010,6a96,,,SIN,10,°C,,
 b,heatpump,heatpump_main_pump,heatpump_main_pump (2010),,fe,2010,c200,,,onoff,,,,
+b,energymgr,bc_2010_d346,Broadcast 2010: d346 d746 da46 dc46,,fe,2010,d346,ign,,IGN:1,,,,ign,,IGN:3,,,,dhw_comfort_zones,,UCH,,,,
 
 # Odczyty grupowe menedżera energii z jednostki zewnętrznej (maska + wartości)
 g,heatpump,grp_7217_6347,Group read 7217 7317 6247 6347,,1e,2000,7217731762476347,ign,s,IGN:1,,,,heatpump_suction_temp,s,SIN,10,°C,,heatpump_comp_discharge_temp,s,SIN,10,°C,,
