@@ -1,5 +1,5 @@
 """Generuje uzupełniający CSV ebusd z ramek, których ariston.csv nie rozpoznaje.
-usage: gen.py <ariston.csv> <base.out (wyjście ebusd dla ramek z logu)> <log ebusd> <out.csv>"""
+usage: gen.py <ariston.csv> <base.out (wyjście ebusd dla ramek z logu)> <log ebusd> <out.csv> [extra_registers.csv]"""
 import sys, re, csv, collections
 
 csvp, basep, logp, outp = sys.argv[1:5]
@@ -27,6 +27,11 @@ for row in csv.reader(open(csvp, encoding='utf-8')):
     if not val: continue
     cand = (prio.get(row[0][0], 3), row[1], row[2], *val)
     if idh not in reg or cand[0] < reg[idh][0]: reg[idh] = cand
+
+if len(sys.argv) > 5:                  # rejestry opisane poza ariston.csv; nie nadpisują istniejących
+    for row in csv.reader(open(sys.argv[5], encoding='utf-8')):
+        if row and not row[0].startswith('#'):
+            reg.setdefault(row[0].lower(), (9, *row[1:6]))
 
 unknown, covered = set(), set()
 for ln in open(basep, encoding='utf-8', errors='replace'):
