@@ -1,38 +1,44 @@
 # Uzupełnienie ariston.csv dla Ariston Nimbus 50S (sama pompa ciepła, bez kotła).
-# Rejestry znane z ariston.csv, ale w układach ramek, które faktycznie pojawiają się
-# na tej magistrali. Każdy rejestr jest dekodowany tylko w jednej linii, a rejestry
-# o nieznanym znaczeniu są pomijane (IGN).
-# Trzymać w tym samym katalogu co ariston.csv i _templates.csv.
+# Rejestry znane z ariston.csv i tools/extra_registers.csv w układach ramek, które faktycznie
+# pojawiają się na tej magistrali. Rejestry o nieznanym znaczeniu są pomijane (IGN).
+# Plik generowany przez tools/gen.py; trzymać w tym samym katalogu co ariston.csv i _templates.csv.
 
 # Rozgłoszenia wartość/min/max (200e, odpowiedź na pytanie 2001)
+b,energymgr,auto_function_200e,auto_function_200e (200e),,fe,200e,0520,,,onoff,,,,
+b,energymgr,dhw_status_200e,dhw_status_200e (200e),,fe,200e,0220,,,onoff,,,,
 b,energymgr,heating_status_200e,heating_status_200e (200e),,fe,200e,0120,,,onoff,,,,
-b,energymgr,z2_day_temp_200e,z2_day_temp_200e (200e),,fe,200e,6272,,,SIN,10,°C,,
-b,energymgr,z3_day_temp_200e,z3_day_temp_200e (200e),,fe,200e,6273,,,SIN,10,°C,,
-b,energymgr,z1_night_temp_200e,z1_night_temp_200e (200e),,fe,200e,6371,,,SIN,10,°C,,
-b,energymgr,z2_night_temp_200e,z2_night_temp_200e (200e),,fe,200e,6372,,,SIN,10,°C,,
-b,energymgr,z3_night_temp_200e,z3_night_temp_200e (200e),,fe,200e,6373,,,SIN,10,°C,,
 b,energymgr,z1_cool_setpoint_temp_set_200e,z1_cool_setpoint_temp_set_200e (200e),,fe,200e,7071,,,SIN,10,°C,,
-b,energymgr,z1_heat_request_mode,z1_heat_request_mode (200e),,fe,200e,c679,,,UCH,0=standard;1=no_time_program;2=forced,,,
-b,energymgr,z2_heat_request_mode,z2_heat_request_mode (200e),,fe,200e,c67a,,,UCH,0=standard;1=no_time_program;2=forced,,,
-b,energymgr,z3_heat_request_mode,z3_heat_request_mode (200e),,fe,200e,c67b,,,UCH,0=standard;1=no_time_program;2=forced,,,
+b,energymgr,z1_day_temp_200e,z1_day_temp_200e (200e),,fe,200e,6271,,,SIN,10,°C,,
+b,energymgr,z1_heat_request_mode,z1_heat_request_mode (200e),,fe,200e,c679,,,UCH,0=mode_0;1=mode_1;2=manual;3=time_program,,,
+b,energymgr,z1_night_temp_200e,z1_night_temp_200e (200e),,fe,200e,6371,,,SIN,10,°C,,
+b,energymgr,z2_day_temp_200e,z2_day_temp_200e (200e),,fe,200e,6272,,,SIN,10,°C,,
+b,energymgr,z2_heat_request_mode,z2_heat_request_mode (200e),,fe,200e,c67a,,,UCH,0=mode_0;1=mode_1;2=manual;3=time_program,,,
+b,energymgr,z2_night_temp_200e,z2_night_temp_200e (200e),,fe,200e,6372,,,SIN,10,°C,,
+b,energymgr,z3_heat_request_mode,z3_heat_request_mode (200e),,fe,200e,c67b,,,UCH,0=mode_0;1=mode_1;2=manual;3=time_program,,,
+b,energymgr,z3_night_temp_200e,z3_night_temp_200e (200e),,fe,200e,6373,,,SIN,10,°C,,
 
 # Rozgłoszenia wartość+status (2010 cykliczne, 200f odpowiedź na pytanie 2000)
-b,energymgr,bc_200f_0082,Broadcast 200f: 0082 0083 c079 c07a,,fe,200f,0082,z2_heat_temp_range,,BCD,0=low;1=high,,,ign,,IGN:3,,,,z3_heat_temp_range,,BCD,0=low;1=high,,,ign,,IGN:3,,,,z1_heat_therm_type_selection,,BCD,0=fixed_temp;1=basic_on_off;2=outdoor_temp_only;3=room_temp_only;4=outdoor_and_room,,,ign,,IGN:3,,,,z2_heat_therm_type_selection,,BCD,0=fixed_temp;1=basic_on_off;2=outdoor_temp_only;3=room_temp_only;4=outdoor_and_room,,,
-b,energymgr,bc_200f_0681,Broadcast 200f: 0681 0682 0683 0081,,fe,200f,0681,z1_cool_temp_range,,BCD,0=fancoil;1=underfloorheating,,,ign,,IGN:3,,,,z2_cool_temp_range,,BCD,0=fancoil;1=underfloorheating,,,ign,,IGN:3,,,,z3_cool_temp_range,,BCD,0=fancoil;1=underfloorheating,,,ign,,IGN:3,,,,z1_heat_temp_range,,BCD,0=low;1=high,,,
-b,energymgr,z3_summer_winter_auto_switch,z3_summer_winter_auto_switch (200f),,fe,200f,0783,,,onoff,,,,
-b,energymgr,bc_200f_0f23,Broadcast 200f: 0f23 1023 0781 0782,,fe,200f,0f23,ign,,IGN:1,,,,ign,,IGN:3,,,,cooling_available,,onoff,,,,ign,,IGN:3,,,,z1_summer_winter_auto_switch,,onoff,,,,ign,,IGN:3,,,,z2_summer_winter_auto_switch,,onoff,,,,
-b,energymgr,hybrid_LWT_setpoint_200f,hybrid_LWT_setpoint_200f (200f),,fe,200f,6047,,,SIN,10,°C,,
-b,energymgr,z3_heat_therm_type_selection,z3_heat_therm_type_selection (200f),,fe,200f,c07b,,,BCD,0=fixed_temp;1=basic_on_off;2=outdoor_temp_only;3=room_temp_only;4=outdoor_and_room,,,
 b,energymgr,bc_2010_0291,Broadcast 2010: 0291 0391 0491 0591,,fe,2010,0291,z2_heat_request,,onoff,,,,ign,,IGN:3,,,,z3_heat_request,,onoff,,,,
-b,energymgr,bc_2010_6197,Broadcast 2010: 6197 6297 6397,,fe,2010,6197,z1_heat_water_target_temp,,SIN,10,°C,,ign,,IGN:3,,,,z2_heat_water_target_temp,,SIN,10,°C,,ign,,IGN:3,,,,z3_heat_water_target_temp,,SIN,10,°C,,
-b,energymgr,z2_setpoint_temp_2010,z2_setpoint_temp_2010 (2010),,fe,2010,6a96,,,SIN,10,°C,,
+b,energymgr,bc_2010_6f96,Broadcast 2010: 6f96 6197 6297,,fe,2010,6f96,ign,,IGN:2,,,,ign,,IGN:3,,,,z1_heat_water_target_temp,,SIN,10,°C,,ign,,IGN:3,,,,z2_heat_water_target_temp,,SIN,10,°C,,
+b,energymgr,bc_2010_d346,Broadcast 2010: d346 d746 da46 dc46,,fe,2010,d346,ign,,IGN:1,,,,ign,,IGN:3,,,,dhw_program_level,,UCH,1=reduced;2=comfort,,,
+b,energymgr,hybrid_LWT_setpoint_200f,hybrid_LWT_setpoint_200f (200f),,fe,200f,6047,,,SIN,10,°C,,
+b,energymgr,z1_program_level,z1_program_level (2010),,fe,2010,c194,,,UCH,1=reduced;2=comfort,,,
+b,energymgr,z3_heat_water_target_temp,z3_heat_water_target_temp (2010),,fe,2010,6397,,,SIN,10,°C,,
 b,heatpump,heatpump_main_pump,heatpump_main_pump (2010),,fe,2010,c200,,,onoff,,,,
-b,energymgr,bc_2010_d346,Broadcast 2010: d346 d746 da46 dc46,,fe,2010,d346,ign,,IGN:1,,,,ign,,IGN:3,,,,dhw_comfort_zones,,UCH,,,,
 
-# Odczyty grupowe menedżera energii z jednostki zewnętrznej (maska + wartości)
-g,heatpump,grp_7217_6347,Group read 7217 7317 6247 6347,,1e,2000,7217731762476347,ign,s,IGN:1,,,,heatpump_suction_temp,s,SIN,10,°C,,heatpump_comp_discharge_temp,s,SIN,10,°C,,
-g,heatpump,grp_7810_cb46,Group read 7810 6e13 ca46 cb46,,1e,2000,78106e13ca46cb46,ign,s,IGN:1,,,,ign,s,IGN:2,,,,ign,s,IGN:2,,,,ign,s,IGN:1,,,,heatpump_compr_frequency,s,UCH,,Hz,,
+# Odczyty grupowe podsłuchane między urządzeniami (maska + wartości)
+g,gateway,grp_84_1421_0488,Group read 1421 c5f0 0921 0488,,84,2000,1421c5f009210488,ign,s,IGN:1,,,,gateway_ntp,s,onoff,,,,ign,s,IGN:1,,,,gateway_wifi,s,onoff,,,,internet_wheather,s,onoff,,,,
+g,gateway,grp_84_d140_cc9a,Group read d140 cc4b c89c cc9a,,84,2000,d140cc4bc89ccc9a,ign,s,IGN:1,,,,config_version_counter,s,UCH,,,,gateway_wifi_state,s,UCH,0=off;1=initalizing;2=idle;3=ap_initializing;4=ap_mode;5=conecting;6=wifi_connected;7=cloud_init;8=cloud_connected;9=error,,,gateway_sw_update,s,UCH,0=initializing;1=waiting;2=upd_micro_1;3=upd_micro_2,,,
+g,heatpump,grp_1e_6e13_d84b,Group read 6e13 ca46 cb46 d84b,,1e,2000,6e13ca46cb46d84b,ign,s,IGN:1,,,,heatpump_flowmeter,s,UIN,10,L,,ign,s,IGN:1,,,,heatpump_compr_frequency,s,UCH,,Hz,,
+g,heatpump,grp_1e_7217_6347,Group read 7217 7317 6247 6347,,1e,2000,7217731762476347,ign,s,IGN:1,,,,heatpump_suction_temp,s,SIN,10,°C,,heatpump_comp_discharge_temp,s,SIN,10,°C,,
 
 # Odczyty wartość/min/max (2001) kierowane do urządzenia
-g,heatpump,silent_mode,silent_mode (2001),,18,2001,0320,,s,onoff,,,,
 g,energymgr,hv_inv_1_mean,hv_inv_1_mean (2001),,18,2001,c92a,,s,BCD,0=Not Defined;1=Absent;2=EDF;3=SG1;4=External switch off signal,,,
+g,energymgr,hydraulic_scheme,hydraulic_scheme (2001),,18,2001,dc28,,s,BCD,0=none;1=bolier;2=boiler_buffer,,,
+g,heatpump,silent_mode,silent_mode (2001),,18,2001,0320,,s,onoff,,,,
+
+# Pojedyncze odczyty rejestrów spoza ariston.csv (aktywne i podsłuchane)
+r,energymgr,ch_flow_temp,ch_flow_temp,,18,2000,6310,ign,s,IGN:1,,,,,s,SIN,10,°C,,
+
+# Zapisy grupowe menedżera energii do jednostki zewnętrznej (2020)
+uw,heatpump,set_c33e_6a47,Group write c33e c446 cd46 6a47,13,1e,2020,c33e,ign,m,IGN:1,,,,ign,m,IGN:2,,,,ign,m,IGN:1,,,,ign,m,IGN:2,,,,ign,m,IGN:1,,,,ign,m,IGN:2,,,,heatpump_flow_setpoint,m,SIN,10,°C,,

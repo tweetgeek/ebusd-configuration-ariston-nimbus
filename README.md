@@ -23,26 +23,41 @@ oparta na [wrongisthenewright/ebusd-configuration-ariston-bridgenet](https://git
 
 - Nazwy z sufiksem (`z1_night_temp_200e`, `hybrid_LWT_setpoint_200f`) istnieją dlatego, że ebusd
   odrzuca dwie pasywne linie o tej samej nazwie i nie ładuje wtedy całej konfiguracji.
-- Linie rozgłoszeń grupowych dekodują tylko wspólny początek ramek zaobserwowanych w logu.
-- Wiele ramek pozostaje nierozpoznanych: to rejestry o nieopisanym znaczeniu
-  (m.in. zapisy `131e2020`, większość rozgłoszeń `13fe2010`).
+- Linia dla rozgłoszeń i zapisów grupowych opisuje najczęstszy układ ramki. Rzadsze, krótsze warianty
+  kończą się w logu ebusd błędem `invalid position` (wartość nie jest wtedy aktualizowana).
+- Sporadycznie urządzenie odpowiada z maską `00` (dane nieważne); ebusd nie umie tego odfiltrować,
+  więc pojedynczy odczyt może być błędny (w 18-godzinnym logu: 1 na ok. 12 tys. ramek).
+- Wiele ramek pozostaje nierozpoznanych: to rejestry o nieopisanym znaczeniu.
 - Zweryfikowane przez wstrzyknięcie ramek z logu do ebusd 26.1.26.1, nie na żywej magistrali.
 
 ## Regeneracja `ariston_nimbus50s.csv` z nowego logu
 
-Wymaga Dockera i logu ebusd z ramkami `received unknown ... cmd`.
+Potrzebny jest surowy log ebusd. W dodatku HA trzeba dopisać do `commandline_options`:
 
-```sh
-mkdir base && cp ariston.csv _templates.csv base/        # konfiguracja bez uzupełnienia
-python3 tools/frames.py ebusd.log > frames.txt           # unikalne ramki z logu
-tools/runall.sh "$PWD/base" "$PWD/frames.txt" > base.out # co ebusd rozpoznaje bez uzupełnienia
-python3 tools/gen.py ariston.csv base.out ebusd.log ariston_nimbus50s.csv tools/extra_registers.csv
-tools/runall.sh "$PWD" "$PWD/frames.txt" | grep -c 'received unknown'   # weryfikacja
+```
+--lograwdata --lograwdatafile=/config/ebusd_raw.log --lograwdatasize=102400
 ```
 
-`tools/extra_registers.csv` zawiera rejestry, których nie ma w `ariston.csv`, opisane w
-[ysard/ebusd_configuration_chaffoteaux_bridgenet](https://github.com/ysard/ebusd_configuration_chaffoteaux_bridgenet).
-Nowo rozpoznane rejestry wystarczy dopisać do tego pliku i wygenerować CSV ponownie.
+```sh
+python3 tools/gen.py ariston.csv ebusd_raw.log ariston_nimbus50s.csv tools/extra_registers.csv
+```
+
+Generator dopasowuje ramki do definicji tak jak ebusd (ZZ, PBSB, początek danych) i dodaje linie
+dla układów, które nie są rozpoznawane albo są rozpoznawane tylko częściowo. Rejestr dostaje nową
+linię tylko wtedy, gdy dany układ występuje wyraźnie częściej niż dotychczasowe źródła tej wartości.
+
+Weryfikacja w prawdziwym ebusd (wymaga Dockera):
+
+```sh
+mkdir -p /tmp/ebusd_cfg && cp ariston.csv ariston_nimbus50s.csv _templates.csv /tmp/ebusd_cfg/
+python3 tools/frames.py ebusd_raw.log > /tmp/frames.txt
+tools/runall.sh /tmp/ebusd_cfg /tmp/frames.txt | grep -E 'unknown|error' | less
+```
+
+`tools/extra_registers.csv` zawiera rejestry, których nie ma w `ariston.csv`, wraz ze źródłem
+(dokumentacja [ysard/ebusd_configuration_chaffoteaux_bridgenet](https://github.com/ysard/ebusd_configuration_chaffoteaux_bridgenet)
+albo korelacja z logiem i integracją Ariston w HA). Nowo rozpoznane rejestry wystarczy tam dopisać
+i wygenerować CSV ponownie.
 
 ## Licencja
 

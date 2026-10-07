@@ -1,8 +1,14 @@
-import sys, re
-seen = {}
-for ln in open(sys.argv[1], encoding='utf-8', errors='replace'):
-    m = re.search(r'unknown (MS|BC|MM) cmd: ([0-9a-f]+)(?: / ([0-9a-f]*))?', ln)
-    if not m: continue
-    fr = m.group(2) + '/' + (m.group(3) or '')
-    seen[fr] = seen.get(fr, 0) + 1
-for fr, n in seen.items(): print(fr)
+"""Wypisuje przykładowe ramki z surowego logu ebusd w formacie dla `ebusd --inject`
+(po kilka na każdy układ rejestrów), do weryfikacji konfiguracji przez tools/runall.sh.
+usage: frames.py <ebusd_raw.log>"""
+import sys, collections
+from bridgenet import read_frames, ids_of
+
+PER_SHAPE = 3
+seen = collections.Counter(); out = {}
+for _, q, a in read_frames(sys.argv[1]):
+    ids = ids_of(q, a)
+    shape = q[:8] + (''.join(ids) if ids else f'len{len(q)}')
+    if seen[shape] < PER_SHAPE and q + '/' + a not in out:
+        out[q + '/' + a] = 1; seen[shape] += 1
+print('\n'.join(out))
