@@ -1,9 +1,19 @@
-# Rejestry spoza ariston.csv, opisane w github.com/ysard/ebusd_configuration_chaffoteaux_bridgenet (README, "Command IDs").
+# Rejestry spoza ariston.csv.
+# Źródła: [ysard] github.com/ysard/ebusd_configuration_chaffoteaux_bridgenet (README, "Command IDs"),
+#         [log]   korelacja z surowym logiem i historią integracji Ariston w HA (2026-10-07).
 # id,circuit,name,type,divisor/values,unit
+# [ysard] wyliczona temperatura zasilania stref
 6197,energymgr,z1_heat_water_target_temp,SIN,10,°C
 6297,energymgr,z2_heat_water_target_temp,SIN,10,°C
 6397,energymgr,z3_heat_water_target_temp,SIN,10,°C
-c679,energymgr,z1_heat_request_mode,UCH,0=standard;1=no_time_program;2=forced,
-c67a,energymgr,z2_heat_request_mode,UCH,0=standard;1=no_time_program;2=forced,
-c67b,energymgr,z3_heat_request_mode,UCH,0=standard;1=no_time_program;2=forced,
-d746,energymgr,dhw_comfort_zones,UCH,,
+# [ysard] tryb żądania grzania; [log] 2 = tryb ręczny, 3 = program czasowy (zmiana razem z climate heat -> auto)
+c679,energymgr,z1_heat_request_mode,UCH,0=mode_0;1=mode_1;2=manual;3=time_program,
+c67a,energymgr,z2_heat_request_mode,UCH,0=mode_0;1=mode_1;2=manual;3=time_program,
+c67b,energymgr,z3_heat_request_mode,UCH,0=mode_0;1=mode_1;2=manual;3=time_program,
+# [log] zgodne z sensor.ariston_ch_flow_temp (r=1,00, średnia różnica 0,4 °C)
+6310,energymgr,ch_flow_temp,SIN,10,°C
+# [log] poziom programu czasowego: zmiana 1->2 o 08:59 (strefa 1) i o 10:00 (CWU) razem z nastawami
+c194,energymgr,z1_program_level,UCH,1=reduced;2=comfort,
+d746,energymgr,dhw_program_level,UCH,1=reduced;2=comfort,
+# [log] nastawa zasilania wysyłana do jednostki zewnętrznej: 38,0 przy grzaniu, 60,0 w czasie cyklu CWU
+6a47,heatpump,heatpump_flow_setpoint,SIN,10,°C
