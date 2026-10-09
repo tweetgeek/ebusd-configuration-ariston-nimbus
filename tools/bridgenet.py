@@ -3,8 +3,8 @@ import re
 
 
 def width(idh):
-    """szerokość wartości rejestru w bajtach: rejestry 6xxx/7xxx są 16-bitowe, pozostałe 8-bitowe"""
-    return 2 if idh[0] in '67' else 1
+    """szerokość wartości rejestru w bajtach: rejestry 4xxx-7xxx są 16-bitowe, pozostałe 8-bitowe"""
+    return 2 if idh[0] in '4567' else 1
 
 
 def crc8(bs):

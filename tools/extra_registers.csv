@@ -1,7 +1,8 @@
 # Rejestry spoza ariston.csv.
 # Źródła: [ysard] github.com/ysard/ebusd_configuration_chaffoteaux_bridgenet (README, "Command IDs"),
 #         [log]   korelacja z surowym logiem i historią integracji Ariston w HA (2026-10-07).
-# id,circuit,name,type,divisor/values,unit
+#         [menu]  menu serwisowe sterownika: zapytania panelu z logu zestawione ze zdjęciami ekranów (2026-10-09).
+# id,circuit,name,type,divisor/values,unit,adres do odpytywania (opcjonalny)
 # [ysard] wyliczona temperatura zasilania stref
 6197,energymgr,z1_heat_water_target_temp,SIN,10,°C
 6297,energymgr,z2_heat_water_target_temp,SIN,10,°C
@@ -10,10 +11,25 @@
 c679,energymgr,z1_heat_request_mode,UCH,0=mode_0;1=mode_1;2=manual;3=time_program,
 c67a,energymgr,z2_heat_request_mode,UCH,0=mode_0;1=mode_1;2=manual;3=time_program,
 c67b,energymgr,z3_heat_request_mode,UCH,0=mode_0;1=mode_1;2=manual;3=time_program,
-# [log] zgodne z sensor.ariston_ch_flow_temp (r=1,00, średnia różnica 0,4 °C)
-6310,energymgr,ch_flow_temp,SIN,10,°C
+# [log] zgodne z sensor.ariston_ch_flow_temp (r=1,00, średnia różnica 0,4 °C); [menu] 17.14.2 Mierzona T CO zasilanie
+6310,energymgr,ch_flow_temp,SIN,10,°C,18
 # [log] poziom programu czasowego: zmiana 1->2 o 08:59 (strefa 1) i o 10:00 (CWU) razem z nastawami
 c194,energymgr,z1_program_level,UCH,1=reduced;2=comfort,
 d746,energymgr,dhw_program_level,UCH,1=reduced;2=comfort,
 # [log] nastawa zasilania wysyłana do jednostki zewnętrznej: 38,0 przy grzaniu, 60,0 w czasie cyklu CWU
 6a47,heatpump,heatpump_flow_setpoint,SIN,10,°C
+# [menu] 17.14 Diagnostyka EM - wejścia
+6610,energymgr,ch_return_temp,SIN,10,°C,18
+1b11,energymgr,pressure_switch,onoff,,,18
+# [menu] 17.15 Diagnostyka EM - wyjścia (między znanymi rejestrami zaworów i anody)
+1403,energymgr,heater_1_status,onoff,,,18
+1503,energymgr,heater_2_status,onoff,,,18
+1603,energymgr,heater_3_status,onoff,,,18
+# [menu] 17.0.4 CWU - funkcja BOOST
+1e22,energymgr,dhw_boost,onoff,,,18
+# [menu] 17.9 Statystyki Energy Manager: liczniki grzałek (sterownik pokazuje wartość podzieloną przez 10;
+#        pozostałe liczniki z tego menu są już w ariston.csv)
+51d1,heatpump,resistance_1_hours,UIN,,h,18
+52d1,heatpump,resistance_2_hours,UIN,,h,18
+53d1,heatpump,resistance_3_hours,UIN,,h,18
+48d8,heatpump,resistance_1_cycles,UIN,,,18
