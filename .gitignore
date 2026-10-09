@@ -1,3 +1,5 @@
 .env
 *.log
 __pycache__/
+dane_testowe/
+.DS_Store

@@ -56,8 +56,13 @@ tools/runall.sh /tmp/ebusd_cfg /tmp/frames.txt | grep -E 'unknown|error' | less
 
 `tools/extra_registers.csv` zawiera rejestry, których nie ma w `ariston.csv`, wraz ze źródłem
 (dokumentacja [ysard/ebusd_configuration_chaffoteaux_bridgenet](https://github.com/ysard/ebusd_configuration_chaffoteaux_bridgenet)
-albo korelacja z logiem i integracją Ariston w HA). Nowo rozpoznane rejestry wystarczy tam dopisać
-i wygenerować CSV ponownie.
+korelacja z logiem i integracją Ariston w HA albo menu serwisowe sterownika). Nowo rozpoznane rejestry
+wystarczy tam dopisać i wygenerować CSV ponownie. Rejestr z podanym adresem urządzenia dostaje linię `r`,
+czyli ebusd odpytuje go aktywnie.
+
+Rejestry z menu serwisowego rozpoznaje się tak: przy włączonym surowym logu przejść menu sterownika,
+fotografując ekrany. Panel (adres `70`) pyta wtedy o każdy wyświetlany parametr komendą `2001`,
+a odpowiedź niesie wartość oraz zakres min/max, które wystarczy zestawić z ekranem.
 
 ## Licencja
 

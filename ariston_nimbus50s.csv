@@ -19,6 +19,7 @@ b,energymgr,z3_night_temp_200e,z3_night_temp_200e (200e),,fe,200e,6373,,,SIN,10,
 
 # Rozgłoszenia wartość+status (2010 cykliczne, 200f odpowiedź na pytanie 2000)
 b,energymgr,bc_2010_0291,Broadcast 2010: 0291 0391 0491 0591,,fe,2010,0291,z2_heat_request,,onoff,,,,ign,,IGN:3,,,,z3_heat_request,,onoff,,,,
+b,energymgr,bc_2010_6a96,Broadcast 2010: 6a96 6b96,,fe,2010,6a96,ign,,IGN:2,,,,ign,,IGN:3,,,,z3_setpoint_temp,,SIN,10,°C,,
 b,energymgr,bc_2010_6f96,Broadcast 2010: 6f96 6197 6297,,fe,2010,6f96,ign,,IGN:2,,,,ign,,IGN:3,,,,z1_heat_water_target_temp,,SIN,10,°C,,ign,,IGN:3,,,,z2_heat_water_target_temp,,SIN,10,°C,,
 b,energymgr,bc_2010_d346,Broadcast 2010: d346 d746 da46 dc46,,fe,2010,d346,ign,,IGN:1,,,,ign,,IGN:3,,,,dhw_program_level,,UCH,1=reduced;2=comfort,,,
 b,energymgr,hybrid_LWT_setpoint_200f,hybrid_LWT_setpoint_200f (200f),,fe,200f,6047,,,SIN,10,°C,,
@@ -27,18 +28,35 @@ b,energymgr,z3_heat_water_target_temp,z3_heat_water_target_temp (2010),,fe,2010,
 b,heatpump,heatpump_main_pump,heatpump_main_pump (2010),,fe,2010,c200,,,onoff,,,,
 
 # Odczyty grupowe podsłuchane między urządzeniami (maska + wartości)
+g,energymgr,grp_18_0601_1503,Group read 0601 0701 1403 1503,,18,2000,0601070114031503,ign,s,IGN:1,,,,heatpump_3way_valve_dhw_heat,s,BCD,0=dhw;1=heat,,,ign,s,IGN:1,,,,heater_1_status,s,onoff,,,,heater_2_status,s,onoff,,,,
+g,energymgr,grp_18_1503_1c11,Group read 1503 1603 1803 1c11,,18,2000,1503160318031c11,ign,s,IGN:1,,,,ign,s,IGN:1,,,,heater_3_status,s,onoff,,,,
+g,energymgr,grp_18_1e22_1d23,Group read 1e22 c92a 0323 1d23,,18,2000,1e22c92a03231d23,ign,s,IGN:1,,,,dhw_boost,s,onoff,,,,
+g,energymgr,grp_18_40d1_47d1,Group read 40d1 45d1 47d1,,18,2000,40d145d147d1,ign,s,IGN:1,,,,heatpump_only_op_hours,s,UIN,,h,,ign,s,IGN:2,,,,heatpump_defrost_op_hours,s,UIN,,h,,
+g,energymgr,grp_18_54d1_56d1,Group read 54d1 55d1 56d1,,18,2000,54d155d156d1,ign,s,IGN:1,,,,heatpump_cooling_op_hours,s,UIN,,h,,heatpump_heating_op_hours,s,UIN,,h,,heatpump_dhw_buffer_op_hours,s,UIN,,h,,
+g,energymgr,grp_18_6310_6610,Group read 6310 6610,,18,2000,63106610,ign,s,IGN:1,,,,ign,s,IGN:2,,,,ch_return_temp,s,SIN,10,°C,,
 g,gateway,grp_84_1421_0488,Group read 1421 c5f0 0921 0488,,84,2000,1421c5f009210488,ign,s,IGN:1,,,,gateway_ntp,s,onoff,,,,ign,s,IGN:1,,,,gateway_wifi,s,onoff,,,,internet_wheather,s,onoff,,,,
 g,gateway,grp_84_d140_cc9a,Group read d140 cc4b c89c cc9a,,84,2000,d140cc4bc89ccc9a,ign,s,IGN:1,,,,config_version_counter,s,UCH,,,,gateway_wifi_state,s,UCH,0=off;1=initalizing;2=idle;3=ap_initializing;4=ap_mode;5=conecting;6=wifi_connected;7=cloud_init;8=cloud_connected;9=error,,,gateway_sw_update,s,UCH,0=initializing;1=waiting;2=upd_micro_1;3=upd_micro_2,,,
 g,heatpump,grp_1e_6e13_d84b,Group read 6e13 ca46 cb46 d84b,,1e,2000,6e13ca46cb46d84b,ign,s,IGN:1,,,,heatpump_flowmeter,s,UIN,10,L,,ign,s,IGN:1,,,,heatpump_compr_frequency,s,UCH,,Hz,,
 g,heatpump,grp_1e_7217_6347,Group read 7217 7317 6247 6347,,1e,2000,7217731762476347,ign,s,IGN:1,,,,heatpump_suction_temp,s,SIN,10,°C,,heatpump_comp_discharge_temp,s,SIN,10,°C,,
 
 # Odczyty wartość/min/max (2001) kierowane do urządzenia
+g,energymgr,dhw_pv_delta_t_setp,dhw_pv_delta_t_setp (2001),,18,2001,762d,,s,SIN,10,°C,,
 g,energymgr,hv_inv_1_mean,hv_inv_1_mean (2001),,18,2001,c92a,,s,BCD,0=Not Defined;1=Absent;2=EDF;3=SG1;4=External switch off signal,,,
 g,energymgr,hydraulic_scheme,hydraulic_scheme (2001),,18,2001,dc28,,s,BCD,0=none;1=bolier;2=boiler_buffer,,,
 g,heatpump,silent_mode,silent_mode (2001),,18,2001,0320,,s,onoff,,,,
 
-# Pojedyncze odczyty rejestrów spoza ariston.csv (aktywne i podsłuchane)
+# Odczyty rejestrów spoza ariston.csv (odpytywane przez ebusd, dopasowywane też do podsłuchanych odczytów)
 r,energymgr,ch_flow_temp,ch_flow_temp,,18,2000,6310,ign,s,IGN:1,,,,,s,SIN,10,°C,,
+r,energymgr,ch_return_temp,ch_return_temp,,18,2000,6610,ign,s,IGN:1,,,,,s,SIN,10,°C,,
+r,energymgr,dhw_boost,dhw_boost,,18,2000,1e22,ign,s,IGN:1,,,,,s,onoff,,,,
+r,energymgr,heater_1_status,heater_1_status,,18,2000,1403,ign,s,IGN:1,,,,,s,onoff,,,,
+r,energymgr,heater_2_status,heater_2_status,,18,2000,1503,ign,s,IGN:1,,,,,s,onoff,,,,
+r,energymgr,heater_3_status,heater_3_status,,18,2000,1603,ign,s,IGN:1,,,,,s,onoff,,,,
+r,energymgr,pressure_switch,pressure_switch,,18,2000,1b11,ign,s,IGN:1,,,,,s,onoff,,,,
+r,heatpump,resistance_1_cycles,resistance_1_cycles,,18,2000,48d8,ign,s,IGN:1,,,,,s,UIN,,,,
+r,heatpump,resistance_1_hours,resistance_1_hours,,18,2000,51d1,ign,s,IGN:1,,,,,s,UIN,,h,,
+r,heatpump,resistance_2_hours,resistance_2_hours,,18,2000,52d1,ign,s,IGN:1,,,,,s,UIN,,h,,
+r,heatpump,resistance_3_hours,resistance_3_hours,,18,2000,53d1,ign,s,IGN:1,,,,,s,UIN,,h,,
 
 # Zapisy grupowe menedżera energii do jednostki zewnętrznej (2020)
 uw,heatpump,set_c33e_6a47,Group write c33e c446 cd46 6a47,13,1e,2020,c33e,ign,m,IGN:1,,,,ign,m,IGN:2,,,,ign,m,IGN:1,,,,ign,m,IGN:2,,,,ign,m,IGN:1,,,,ign,m,IGN:2,,,,heatpump_flow_setpoint,m,SIN,10,°C,,
