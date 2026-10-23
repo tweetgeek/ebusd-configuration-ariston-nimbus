@@ -3,3 +3,4 @@
 __pycache__/
 dane_testowe/
 .DS_Store
+.cache/

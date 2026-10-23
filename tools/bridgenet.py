@@ -63,3 +63,30 @@ def ids_of(q, a=''):
     while i + 4 <= len(d):
         ids.append(d[i:i + 4]); i += 4 + 2 * width(d[i:i + 4]) + step
     return ids if ids and i == len(d) else None
+
+
+def segments(q, a=''):
+    """podział ramki na pola rejestrów: lista (rejestr, rola, część, bajt od, bajt do) z pozycjami liczonymi od
+    początku danych mastera ('m') albo odpowiedzi ('s'); role: id, value, min, max, status, mask. None, gdy
+    ramka nie niesie rejestrów w znanym układzie"""
+    ids = ids_of(q, a)
+    if not ids: return None
+    zz, pbsb = q[2:4], q[4:8]
+    if zz != 'fe' and pbsb == '2000':
+        out, i = [(r, 'id', 'm', 2 * k, 2 * k + 2) for k, r in enumerate(ids)] + [(None, 'mask', 's', 0, 1)], 1
+        for r in ids:
+            out.append((r, 'value', 's', i, i + width(r))); i += width(r)
+        return out
+    if zz != 'fe' and pbsb == '2001':
+        r, w = ids[0], width(ids[0])
+        return [(r, 'id', 'm', 0, 2)] + [(r, role, 's', k * w, k * w + w) for k, role in enumerate(('value', 'min', 'max'))]
+    if pbsb == '200e':
+        r, w = ids[0], width(ids[0])
+        return [(r, 'id', 'm', 0, 2)] + [(r, role, 'm', 2 + k * w, 2 + (k + 1) * w) for k, role in enumerate(('value', 'min', 'max'))]
+    out, step, i = [], (1 if zz == 'fe' else 0), 0
+    for r in ids:
+        w = width(r)
+        out += [(r, 'id', 'm', i, i + 2), (r, 'value', 'm', i + 2, i + 2 + w)]
+        if step: out.append((r, 'status', 'm', i + 2 + w, i + 3 + w))
+        i += 2 + w + step
+    return out

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magistrala Nimbus 50S</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..800,0..1,0..1,0..1&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.30/dist/uPlot.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <h1>Magistrala Nimbus 50S</h1>
+    <p id="summary">Wczytuję dane z serwera panelu…</p>
+  </div>
+  <div class="range">
+    <span id="range-label">Cały okres logów</span>
+    <button id="range-reset" type="button" hidden>Pokaż cały okres</button>
+  </div>
+</header>
+<nav class="tabs" role="tablist" aria-label="Widoki">
+  <button role="tab" type="button" data-tab="lines" aria-selected="true">Linie CSV <span class="count" id="n-lines"></span></button>
+  <button role="tab" type="button" data-tab="shapes" aria-selected="false">Układy ramek <span class="count" id="n-shapes"></span></button>
+  <button role="tab" type="button" data-tab="registers" aria-selected="false">Rejestry <span class="count" id="n-registers"></span></button>
+</nav>
+<main>
+  <aside class="list" aria-label="Lista">
+    <div class="filters" id="filters"></div>
+    <div class="rows" id="rows"></div>
+  </aside>
+  <section class="detail" id="detail" aria-live="polite"></section>
+</main>
+<template id="intro">
+  <article class="intro">
+    <h2>Jak czytać ramkę eBUS</h2>
+    <p>Każda ramka to rozmowa dwóch urządzeń. Nadawca (master) wysyła polecenie z danymi, odbiorca (slave)
+      potwierdza i, jeśli trzeba, odsyła odpowiedź. Rozgłoszenia (odbiorca <code>fe</code>) trafiają do wszystkich
+      i nie mają odpowiedzi.</p>
+    <div class="strip-wrap" id="intro-strip"></div>
+    <p>ebusd szuka dla każdej ramki linii w plikach CSV, która ma ten sam odbiorca (ZZ), to samo polecenie (PBSB)
+      i której ID zgadza się z początkiem danych. Jeśli w linii jest podany nadawca (QQ), też musi się zgadzać.
+      Gdy pasuje kilka linii, wygrywa ta z najdłuższym ID. Pozostałe kolumny linii opisują kolejne pola: ile bajtów
+      zajmują, w której części ramki leżą i jak zamienić je na wartość.</p>
+    <p>Wybierz linię z listy, żeby zobaczyć to na prawdziwych ramkach z logu. Zakładka „Układy ramek” pokazuje ramki,
+      dla których nie ma żadnej linii, a „Rejestry” pojedyncze wartości niezależnie od plików CSV.</p>
+  </article>
+</template>
+<script src="https://cdn.jsdelivr.net/npm/uplot@1.6.30/dist/uPlot.iife.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

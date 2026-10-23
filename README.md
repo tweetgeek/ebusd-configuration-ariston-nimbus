@@ -73,6 +73,27 @@ Rejestry z menu serwisowego rozpoznaje się tak: przy włączonym surowym logu p
 fotografując ekrany. Panel (adres `70`) pyta wtedy o każdy wyświetlany parametr komendą `2001`,
 a odpowiedź niesie wartość oraz zakres min/max, które wystarczy zestawić z ekranem.
 
+## Panel podglądu
+
+```sh
+python3 tools/panel.py            # domyślnie ebusd_raw.log i dane_testowe/*.log, otwiera http://127.0.0.1:8765/
+```
+
+Panel pokazuje, jak ebusd rozumie zebrane logi:
+
+- **Linie CSV**: dla każdej linii z `ariston.csv` i `ariston_nimbus50s.csv` liczba dopasowanych ramek,
+  przykładowa ramka rozłożona na bajty pokolorowane według pól z wiersza CSV, przebiegi wartości w czasie
+  oraz inne linie dla tego samego polecenia (wygrywa najdłuższe ID).
+- **Układy ramek**: ramki z tym samym nadawcą, odbiorcą, poleceniem i listą rejestrów, w tym te, do których
+  nie pasuje żadna linia, wraz z powodem dla każdej linii-kandydatki.
+- **Rejestry**: pojedyncze rejestry niezależnie od plików CSV, z wykresem i porównaniem kilku rejestrów
+  na zsynchronizowanych wykresach.
+
+Pierwsze uruchomienie czyta logi (ok. minuty na 3,7 mln ramek) i zapisuje wynik w `.cache/`. Po zmianie plików
+CSV panel sam przelicza dopasowania przy następnym zapytaniu (ok. 2 s). Dekoder panelu (`tools/ebuscsv.py`)
+daje te same wyniki co ebusd 26.1.26.1 dla wszystkich ramek z `tools/frames.py`; `python3 tools/test_ebuscsv.py`
+sprawdza najważniejsze przypadki. Wykresy (uPlot) i krój pisma pobierane są z internetu.
+
 ## Licencja
 
 GPL-3.0, jak repozytorium źródłowe.
