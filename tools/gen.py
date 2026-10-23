@@ -1,10 +1,10 @@
-"""Generuje ariston_nimbus50s.csv: linie ebusd dla ramek z surowego logu, których ariston.csv nie rozpoznaje,
+"""Generuje ariston_nimbus50s.csv: linie ebusd dla ramek z surowych logów, których ariston.csv nie rozpoznaje,
 oraz linie odczytu dla rejestrów z extra_registers.csv, które mają podany adres urządzenia.
-usage: gen.py <ariston.csv> <ebusd_raw.log> <out.csv> [extra_registers.csv]"""
+usage: gen.py <ariston.csv> <out.csv> <extra_registers.csv> <ebusd_raw.log>..."""
 import sys, csv, collections
 from bridgenet import read_frames, ids_of, width
 
-csvp, logp, outp = sys.argv[1:4]
+csvp, outp, extrap, logps = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4:]
 MIN_COUNT = 10        # rzadsze układy to jednorazowe zdarzenia (np. przeglądanie menu sterownika)
 DOMINANCE = 5         # rejestr dostaje nową linię, gdy układ jest tyle razy częstszy od dotychczasowych źródeł
 ONE = {'UCH', 'SCH', 'BCD', 'D1B', 'D1C', 'onoff', 'heat_thermoreg_types', 'cool_thermoreg_types',
@@ -27,16 +27,17 @@ for row in csv.reader(open(csvp, encoding='utf-8')):
     if not val: continue
     cand = (prio.get(row[0][0], 3), row[1], row[2], *val)
     if idh not in reg or cand[0] < reg[idh][0]: reg[idh] = cand
-if len(sys.argv) > 4:
-    for row in csv.reader(open(sys.argv[4], encoding='utf-8')):
-        if not row or row[0].startswith('#'): continue
-        reg[row[0].lower()] = (9, *row[1:6])
-        if len(row) > 6 and row[6]: polled[row[0].lower()] = row[6].lower()
+counters = []                                 # liczniki 32-bitowe: (id dwóch rejestrów, adres, definicja)
+for row in csv.reader(open(extrap, encoding='utf-8')):
+    if not row or row[0].startswith('#'): continue
+    if len(row[0]) == 8: counters.append((row[0].lower(), row[6].lower(), (9, *row[1:6]))); continue
+    reg[row[0].lower()] = (9, *row[1:6])
+    if len(row) > 6 and row[6]: polled[row[0].lower()] = row[6].lower()
 
 covered = collections.Counter()               # rejestr -> ile razy jest już dekodowany
 shapes = collections.Counter()                # (qq, zz, pbsb, ids) -> liczba wystąpień nierozpoznanych ramek
 partial = {}                                  # (zz, lista rejestrów odczytu) -> rejestry już dekodowane linią o krótszym id
-for _, q, a in read_frames(logp):
+for _, q, a in (f for logp in logps for f in read_frames(logp)):
     line = None
     for qq, zz, pbsb, idh in defs:
         if zz == q[2:4] and pbsb == q[4:8] and q[10:].startswith(idh) and qq in ('', q[:2]):
@@ -77,6 +78,7 @@ TITLES = {'200e': 'Rozgłoszenia wartość/min/max (200e, odpowiedź na pytanie 
           'rd': 'Odczyty grupowe podsłuchane między urządzeniami (maska + wartości)',
           '2001': 'Odczyty wartość/min/max (2001) kierowane do urządzenia',
           'single': 'Odczyty rejestrów spoza ariston.csv (odpytywane przez ebusd, dopasowywane też do podsłuchanych odczytów)',
+          'counter': 'Liczniki 32-bitowe: odczyt pary rejestrów (młodsze słowo, starsze słowo) jako jednej wartości',
           'wr': 'Zapisy grupowe menedżera energii do jednostki zewnętrznej (2020)'}
 sections = collections.defaultdict(list); new_names = set()
 def name_for(r, suffix):
@@ -154,6 +156,8 @@ for idh, zz in polled.items():          # rejestry do aktywnego odpytywania, nie
     if not r or (r[1], r[2]) in new_names or any(d[1] == zz and d[2] == '2000' and d[3] == idh for d in defs): continue
     new_names.add((r[1], r[2]))
     sections['single'].append(f'r,{r[1]},{r[2]},{r[2]},,{zz},2000,{idh},{ign(1, "s")}{val(r, "s")}')
+for idh, zz, r in counters:
+    sections['counter'].append(f'r,{r[1]},{r[2]},{r[2]},,{zz},2000,{idh},{ign(1, "s")}{val(r, "s")}')
 
 with open(outp, 'w', encoding='utf-8') as fh:
     fh.write('# Uzupełnienie ariston.csv dla Ariston Nimbus 50S (sama pompa ciepła, bez kotła).\n'

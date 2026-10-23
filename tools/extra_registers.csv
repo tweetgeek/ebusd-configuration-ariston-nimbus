@@ -2,7 +2,11 @@
 # Źródła: [ysard] github.com/ysard/ebusd_configuration_chaffoteaux_bridgenet (README, "Command IDs"),
 #         [log]   korelacja z surowym logiem i historią integracji Ariston w HA (2026-10-07).
 #         [menu]  menu serwisowe sterownika: zapytania panelu z logu zestawione ze zdjęciami ekranów (2026-10-09).
+#         [zamel] 7,5-dniowy log (2026-10-09..17) zestawiony z licznikiem Zamel LEW-02 na zasilaniu pompy
+#                 i z danymi chmury Ariston w HA.
 # id,circuit,name,type,divisor/values,unit,adres do odpytywania (opcjonalny)
+# id z ośmiu znaków to licznik 32-bitowy: dwa kolejne rejestry (młodsze i starsze słowo) czytane jednym
+# zapytaniem; adres jest wtedy wymagany.
 # [ysard] wyliczona temperatura zasilania stref
 6197,energymgr,z1_heat_water_target_temp,SIN,10,°C
 6297,energymgr,z2_heat_water_target_temp,SIN,10,°C
@@ -33,3 +37,22 @@ d746,energymgr,dhw_program_level,UCH,1=reduced;2=comfort,
 52d1,heatpump,resistance_2_hours,UIN,,h,18
 53d1,heatpump,resistance_3_hours,UIN,,h,18
 48d8,heatpump,resistance_1_cycles,UIN,,,18
+# [zamel] moc elektryczna jednostki zewnętrznej: Zamel = 0,989 * 7c4f + 170 W (r = 0,997; 170 W to stałe
+#         obciążenie poza jednostką). W ariston.csv tylko w odczycie 63477c4f, a menedżer energii czyta
+#         7c4f osobno co ok. 25 s.
+7c4f,heatpump,heatpump_power,UIN,,W
+# [zamel] zużycie prądu na CO i CWU: chmura Ariston podaje co 2 h przyrost / 360 kWh; przyrost 54d9 = 350,8 *
+#         kWh z 7c4f w czasie cyklu CWU (r = 0,999). Bramka (7f) i panel (70) czytają oba słowa jednym zapytaniem.
+52d953d9,energymgr,ch_electric_energy,ULG,360,kWh,18
+54d955d9,energymgr,dhw_electric_energy,ULG,360,kWh,18
+# [zamel] ten sam układ i ta sama para odczytów, bez zmian w październiku: najpewniej chłodzenie (niepotwierdzone)
+56d957d9,energymgr,cooling_electric_energy,ULG,360,kWh,18
+# [zamel] te same wartości co 6610 w tych samych chwilach; rozgłaszane co ok. 30 s (6610 odpytywany co ok. 3 min)
+769e,energymgr,ch_return_temp_bc,SIN,10,°C
+# [zamel] zapis do jednostki zewnętrznej: 3 = żądanie pracy sprężarki, 0 = brak (sprężarka staje kilkadziesiąt s później)
+cd46,heatpump,heatpump_compressor_request,UCH,0=off;3=on,
+# [zamel] faza pracy (kody bez nazw): 190 postój, 18 -> 1 (pierwsza godzina) -> 2 grzanie CO,
+#         240 -> 22/23 -> 20 -> 46 -> 71 cykl CWU, 70 wybieg pompy po CO; rzadkie: 10, 11, 36, 104, 130, 132.
+#         Rozgłaszane tylko w ramce c200 c74b c94b, która ma też wariant c200 d346 d746 da46, więc linia pasywna
+#         dawałaby złe wartości; odczyt aktywny z menedżera energii jak hybrid_status (c94b), na magistrali niesprawdzony.
+c74b,energymgr,heatpump_operation_phase,UCH,,,18

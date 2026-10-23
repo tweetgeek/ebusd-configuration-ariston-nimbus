@@ -28,6 +28,12 @@ oparta na [wrongisthenewright/ebusd-configuration-ariston-bridgenet](https://git
 - Sporadycznie urządzenie odpowiada z maską `00` (dane nieważne); ebusd nie umie tego odfiltrować,
   więc pojedynczy odczyt może być błędny (w 18-godzinnym logu: 1 na ok. 12 tys. ramek).
 - Wiele ramek pozostaje nierozpoznanych: to rejestry o nieopisanym znaczeniu.
+- `hybrid_status` pokazuje w każdym cyklu CWU wartość 4, którą `ariston.csv` opisuje jako
+  „Thermal Cleanse Function”; wartość 3 („DHW Cycle”) nie pojawia się. Na Nimbus 50S 4 oznacza zwykłe grzanie CWU.
+- Liczniki `ch_electric_energy` i `dhw_electric_energy` (kWh) to zużycie prądu, z którego chmura Ariston liczy
+  zużycie na CO i CWU. Przyrosty są potwierdzone; to, że drugi rejestr pary jest starszym słowem licznika,
+  wynika z odczytu obu rejestrów jednym zapytaniem, a nie z obserwacji przeniesienia.
+- `heatpump_operation_phase` jest odpytywany aktywnie z menedżera energii; odpowiedzi nie sprawdzono na żywej magistrali.
 - Zweryfikowane przez wstrzyknięcie ramek z logu do ebusd 26.1.26.1, nie na żywej magistrali.
 
 ## Regeneracja `ariston_nimbus50s.csv` z nowego logu
@@ -39,12 +45,14 @@ Potrzebny jest surowy log ebusd. W dodatku HA trzeba dopisać do `commandline_op
 ```
 
 ```sh
-python3 tools/gen.py ariston.csv ebusd_raw.log ariston_nimbus50s.csv tools/extra_registers.csv
+python3 tools/gen.py ariston.csv ariston_nimbus50s.csv tools/extra_registers.csv ebusd_raw.log dane_testowe/*.log
 ```
 
 Generator dopasowuje ramki do definicji tak jak ebusd (ZZ, PBSB, początek danych) i dodaje linie
 dla układów, które nie są rozpoznawane albo są rozpoznawane tylko częściowo. Rejestr dostaje nową
 linię tylko wtedy, gdy dany układ występuje wyraźnie częściej niż dotychczasowe źródła tej wartości.
+Warto podawać wszystkie zebrane logi naraz: układy widoczne tylko w jednym z nich (np. z przeglądania
+menu sterownika) inaczej wypadają z wygenerowanego pliku.
 
 Weryfikacja w prawdziwym ebusd (wymaga Dockera):
 
@@ -58,7 +66,8 @@ tools/runall.sh /tmp/ebusd_cfg /tmp/frames.txt | grep -E 'unknown|error' | less
 (dokumentacja [ysard/ebusd_configuration_chaffoteaux_bridgenet](https://github.com/ysard/ebusd_configuration_chaffoteaux_bridgenet)
 korelacja z logiem i integracją Ariston w HA albo menu serwisowe sterownika). Nowo rozpoznane rejestry
 wystarczy tam dopisać i wygenerować CSV ponownie. Rejestr z podanym adresem urządzenia dostaje linię `r`,
-czyli ebusd odpytuje go aktywnie.
+czyli ebusd odpytuje go aktywnie. Identyfikator z ośmiu znaków (np. `52d953d9`) opisuje licznik 32-bitowy
+złożony z dwóch rejestrów czytanych jednym zapytaniem; adres jest wtedy wymagany.
 
 Rejestry z menu serwisowego rozpoznaje się tak: przy włączonym surowym logu przejść menu sterownika,
 fotografując ekrany. Panel (adres `70`) pyta wtedy o każdy wyświetlany parametr komendą `2001`,
